@@ -1,4 +1,4 @@
-if getgenv().TeamSkeet then warn("Team Skeet is already loaded!") return end
+if getgenv().TeamSkeet then warn("SKEET.WIN is already loaded!") return end
 getgenv().TeamSkeet = true
 
 if not game:IsLoaded() then
@@ -64,7 +64,7 @@ if DeviceType == "Mobile" then
 end
 
 local Window = Fluent:CreateWindow({
-    Title = game:GetService("MarketplaceService"):GetProductInfo(16732694052).Name .." | Team Skeet v1.0",
+    Title = game:GetService("MarketplaceService"):GetProductInfo(16732694052).Name .." | SKEET.WIN v1.0",
     SubTitle = " (.gg/Mw4uAN2CHx)",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -120,7 +120,7 @@ local RunCount = false
 -- // // // Functions // // // --
 function ShowNotification(String)
     Fluent:Notify({
-        Title = "TeamSkeet x Roblox",
+        Title = "SKEET.WIN x Roblox",
         Content = String,
         Duration = 5
     })
