@@ -1,20 +1,10 @@
-local CoreGui = game:GetService("StarterGui")
-CoreGui:SetCore("SendNotification", {
-  Title = "SKEET.WIN | Arsenal",
-  Text = "Working For Mobile and PC Executor",
-  Duration = 8,
-})
-
-game:GetService("StarterGui"):SetCore("SendNotification", {
-  Title = "SKEET.WIN",
-  Text = "Arsenal",
-  Icon = "rbxthumb://type=Asset&id=13508183954&w=150&h=150",
-  Duration = 8,
-})
+-- jols1337 never knew :3
 
 
 
--- actual fly script
+
+
+-- Fly Script yk AHAHAHA
 local flySettings={fly=false,flyspeed=50}
 local c local h local bv local bav local cam local flying local p=game.Players.LocalPlayer
 local buttons={W=false,S=false,A=false,D=false,Moving=false}
@@ -27,406 +17,759 @@ game:GetService("RunService").Heartbeat:connect(function(step)if flying and c an
 
 
 
+local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
+
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+
+local Window = Library:CreateWindow({
+    Title = 'SKEET.WIN',
+    Center = true,
+    AutoShow = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2
+})
+
+local Tabs = {
+    Main = Window:AddTab('Aim'),
+    Visual = Window:AddTab('Visual'),
+    Changer = Window:AddTab('Changer'),
+    Misc = Window:AddTab('Misc'),
+    Settings = Window:AddTab("settings"),
+}
+
+local Boxes = {
+	Aim = Tabs.Main:AddLeftGroupbox("Aim"),
+    AA = Tabs.Main:AddRightGroupbox("Anti-Aim"),
+	Visual = Tabs.Visual:AddLeftGroupbox("Visual"),
+    AVisual = Tabs.Visual:AddRightGroupbox("Arm Visual"),
+    GVisual = Tabs.Visual:AddRightGroupbox("Gun Visual"),
+    Character = Tabs.Changer:AddLeftGroupbox("Character"),
+    Announcer = Tabs.Changer:AddRightGroupbox("Announcer"),
+    Melee = Tabs.Changer:AddLeftGroupbox("Melee"),
+    Card = Tabs.Changer:AddRightGroupbox("Card"),
+    Mods = Tabs.Misc:AddLeftGroupbox("Gun Mods"),
+    PlayerMods = Tabs.Misc:AddRightGroupbox("Player Mods"),
+    Menu   = Tabs.Settings:AddLeftGroupbox("menu"),
+}
+
+local Tabboxes = {
+}
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MeleesFolder = ReplicatedStorage:WaitForChild("Melees")
+local ObtainablesFolder = ReplicatedStorage:WaitForChild("Obtainables")
+local CharacterCaseFolder = ObtainablesFolder:WaitForChild("CharacterCase")
+local NilFolder = CharacterCaseFolder:WaitForChild("nil")
+local ItemDataFolder = ReplicatedStorage:WaitForChild("ItemData")
+local ImagesFolder = ItemDataFolder:WaitForChild("Images")
+local AnnouncersFolder = ImagesFolder:WaitForChild("Announcers")
+local CardsFolder = ImagesFolder:WaitForChild("Cards")
+
+local function getStringValueNames()
+    local stringValueNames = {}
+    for _, item in pairs(NilFolder:GetChildren()) do
+        if item:IsA("StringValue") then
+            table.insert(stringValueNames, item.Name)
+        end
+    end
+    return stringValueNames
+end
+
+local function splitTable(tbl, chunkSize)
+    local result = {}
+    for i = 1, #tbl, chunkSize do
+        local chunk = {}
+        for j = i, math.min(i + chunkSize - 1, #tbl) do
+            table.insert(chunk, tbl[j])
+        end
+        table.insert(result, chunk)
+    end
+    return result
+end
+
+local allStringValueNames = getStringValueNames()
+
+local function createAddList(values, text, flag)
+    Boxes.Character:AddDropdown('Character', {
+        Values = values,
+        Default = 1, -- number index of the value / string
+        Multi = false, -- true / false, allows multiple choices to be selected
+    
+        Text = 'Change Character Skin',
+        Tooltip = 'Ye not 100% working btw', -- Information shown when you hover over the dropdown
+    
+        Callback = function(v)
+                local localPlayerName = game.Players.LocalPlayer.Name
+                local skinName = v
+    
+                local dataPath = "Data"
+                local skinData = game.Players:WaitForChild(localPlayerName):WaitForChild(dataPath):WaitForChild("Skin")
+                if skinData and skinData:IsA("StringValue") then
+                    skinData.Value = skinName
+                    print("Updated StringValue in Data > Skin to", skinName)
+                else
+                    print("Data > Skin folder not found or is not a StringValue")
+                end
+        end
+    })
+end
+
+local chunkedStringValues = splitTable(allStringValueNames, 15)
+
+for i, chunk in ipairs(chunkedStringValues) do
+    createAddList(chunk, "Skin " .. i, "Skin" .. i)
+end
+
+--- >>> ANNOUNCER <<< ---
+local function getStringValueNames1()
+    local stringValueNames = {}
+    for _, item in pairs(AnnouncersFolder:GetChildren()) do
+        if item:IsA("StringValue") then
+            table.insert(stringValueNames, item.Name)
+        end
+    end
+    return stringValueNames
+end
+
+local function splitTable1(tbl, chunkSize)
+    local result = {}
+    for i = 1, #tbl, chunkSize do
+        local chunk = {}
+        for j = i, math.min(i + chunkSize - 1, #tbl) do
+            table.insert(chunk, tbl[j])
+        end
+        table.insert(result, chunk)
+    end
+    return result
+end
+
+local allStringValueNames = getStringValueNames1()
+
+local function createAddList1(values, text, flag)
+    Boxes.Announcer:AddDropdown('Announcer', {
+        Values = values,
+        Default = 1, -- number index of the value / string
+        Multi = false, -- true / false, allows multiple choices to be selected
+    
+        Text = 'Announcer',
+        Tooltip = 'Wow Works!', -- Information shown when you hover over the dropdown
+    
+        Callback = function(v)
+                local localPlayerName = game.Players.LocalPlayer.Name
+                local announcerName = v
+    
+                local dataPath = "Data"
+                local announcerData = game.Players:WaitForChild(localPlayerName):WaitForChild(dataPath):WaitForChild("Announcer")
+                if announcerData and announcerData:IsA("StringValue") then
+                    announcerData.Value = announcerName
+                    print("Updated StringValue in Data > Announcer to", announcerName)
+                else
+                    print("Data > Announcer folder not found or is not a StringValue")
+                end
+        end
+    })
+end
+
+local chunkedStringValues = splitTable(allStringValueNames, 15)
+
+for i, chunk in ipairs(chunkedStringValues) do
+    createAddList1(chunk, "Announcer " .. i, "Announcer" .. i)
+end
 
 
+--- >>> MELEE <<< ---
+local function getFolderNames2()
+    local folderNames = {}
+    for _, folder in pairs(MeleesFolder:GetChildren()) do
+        if folder:IsA("Folder") then
+            table.insert(folderNames, folder.Name)
+        end
+    end
+    return folderNames
+end
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bitef4/Recode/main/UI/Kavo_1.lua"))()
-local Window = Library.CreateLib("SKEET.WIN | Arsenal | v1 ", "BlueTheme")
+-- Function to split table into chunks
+local function splitTable2(tbl, chunkSize)
+    local result = {}
+    for i = 1, #tbl, chunkSize do
+        local chunk = {}
+        for j = i, math.min(i + chunkSize - 1, #tbl) do
+            table.insert(chunk, tbl[j])
+        end
+        table.insert(result, chunk)
+    end
+    return result
+end
 
-local Welcome = Window:NewTab("Main")
-local MainSection = Welcome:NewSection("Welcome To SKEET.WINh | " .. game.Players.LocalPlayer.Name)
+local allFolderNames = getFolderNames2()
+local chunkedFolderNames = splitTable2(allFolderNames, 20)
 
-local HitboxSection = Welcome:NewSection("> Hitbox Settings <")
-local triggerbot = Welcome:NewSection("> Triggerbot <")
+-- Function to create AddList
+local function createAddList2(values)
+    Boxes.Melee:AddDropdown('Melee', {
+        Values = values,
+        Default = 1, -- number index of the value / string
+        Multi = false, -- true / false, allows multiple choices to be selected
+    
+        Text = 'Melee Changer',
+        Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+    
+        Callback = function(v)
+                local localPlayerName = game.Players.LocalPlayer.Name
+                local meleeFolderName = v
+    
+                -- Function to update folder name inside a specified path
+                local function updateFolderName(path)
+                    local folder = game.Players:WaitForChild(localPlayerName):WaitForChild(path)
+                    local childFolder = folder:FindFirstChild("Melee")
+                    if childFolder then
+                        childFolder.Name = meleeFolderName
+                        print("Updated folder name in", path, "to", meleeFolderName)
+                    else
+                        print("Melee folder not found in", path)
+                    end
+                end
+    
+                -- Update the StringValue in Workspace > LocalPlayer > Data > Melee
+                local dataPath = "Data"
+                local meleeData = game.Players:WaitForChild(localPlayerName):WaitForChild(dataPath):WaitForChild("Melee")
+                if meleeData and meleeData:IsA("StringValue") then
+                    meleeData.Value = meleeFolderName
+                    print("Updated StringValue in Data > Melee to", meleeFolderName)
+                else
+                    print("Data > Melee folder not found or is not a StringValue")
+                end
+        end
+    })
+end
 
-local hitboxEnabled = false
-local noCollisionEnabled = false
-local hitbox_original_properties = {}
-local hitboxSize = 21
-local hitboxTransparency = 6
-local teamCheck = "FFA" 
+-- Create AddList for each chunk of folder names
+for i, chunk in ipairs(chunkedFolderNames) do
+    createAddList2(chunk)
+end
 
-local defaultBodyParts = {
-    "UpperTorso",
-    "Head",
+--- >>> CARD <<< ---
+local function getStringValueNames3()
+    local stringValueNames = {}
+    for _, item in pairs(CardsFolder:GetChildren()) do
+        if item:IsA("StringValue") then
+            table.insert(stringValueNames, item.Name)
+        end
+    end
+    return stringValueNames
+end
+
+local function splitTable3(tbl, chunkSize)
+    local result = {}
+    for i = 1, #tbl, chunkSize do
+        local chunk = {}
+        for j = i, math.min(i + chunkSize - 1, #tbl) do
+            table.insert(chunk, tbl[j])
+        end
+        table.insert(result, chunk)
+    end
+    return result
+end
+
+local allStringValueNames = getStringValueNames3()
+
+local function createAddList3(values, text, flag)
+    Boxes.Card:AddDropdown('Card', {
+        Values = values,
+        Default = 1, -- number index of the value / string
+        Multi = false, -- true / false, allows multiple choices to be selected
+    
+        Text = 'Card Changer',
+        Tooltip = 'This is a tooltip', -- Information shown when you hover over the dropdown
+    
+        Callback = function(v)
+                local localPlayerName = game.Players.LocalPlayer.Name
+                local cardName = v
+    
+                local dataPath = "Data"
+                local cardData = game.Players:WaitForChild(localPlayerName):WaitForChild(dataPath):WaitForChild("Card")
+                if cardData and cardData:IsA("StringValue") then
+                    cardData.Value = cardName
+                    print("Updated StringValue in Data > Card to", cardName)
+                else
+                    print("Data > Card folder not found or is not a StringValue")
+                end
+        end
+    })
+end
+
+local chunkedStringValues = splitTable3(allStringValueNames, 15)
+
+for i, chunk in ipairs(chunkedStringValues) do
+    createAddList3(chunk, "Card " .. i, "Card" .. i)
+end
+
+--- >>> > AIM TAB < <<< ---
+
+local Silentaim = {
+    fov = nil, -- Default FOV for legit mode
+    active = false -- Flag to check if Silent Aim is active
+}
+
+local parts = {
+    "RightUpperLeg",
+    "LeftUpperLeg",
+    "HeadHB",
     "HumanoidRootPart"
 }
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local ScreenGui = Instance.new("ScreenGui", LocalPlayer.PlayerGui)
-local WarningText = Instance.new("TextLabel", ScreenGui)
--- useless
-WarningText.Size = UDim2.new(0, 200, 0, 50)
-WarningText.TextSize = 16
-WarningText.Position = UDim2.new(0.5, -150, 0, 0)
-WarningText.Text = "" -- made it into empty string, you can add whatever
-WarningText.TextColor3 = Color3.new(1, 0, 0)
-WarningText.BackgroundTransparency = 1
-WarningText.Visible = false
+Boxes.Aim:AddToggle('SilentAim', {
+    Text = 'Silent Aim',
+    Default = false,
+    Tooltip = 'It never goes off btw',
 
--- -------------------------------------
--- Utility Functions
--- -------------------------------------
-local function savedPart(player, part)
-    if not hitbox_original_properties[player] then
-        hitbox_original_properties[player] = {}
-    end
-    if not hitbox_original_properties[player][part.Name] then
-        hitbox_original_properties[player][part.Name] = {
-            CanCollide = part.CanCollide,
-            Transparency = part.Transparency,
-            Size = part.Size
-        }
-    end
-end
-
-local function restoredPart(player)
-    if hitbox_original_properties[player] then
-        for partName, properties in pairs(hitbox_original_properties[player]) do
-            local part = player.Character and player.Character:FindFirstChild(partName)
-            if part and part:IsA("BasePart") then
-                part.CanCollide = properties.CanCollide
-                part.Transparency = properties.Transparency
-                part.Size = properties.Size
-            end
+    Callback = function(v)
+        Silentaim.active = v
+        if Silentaim.active then
+            print("Silent Aim Activated")
+        else
+            print("Silent Aim Deactivated")
         end
     end
-end
+})
 
-local function findClosestPart(player, partName)
-    if not player.Character then return nil end
-    local characterParts = player.Character:GetChildren()
-    for _, part in ipairs(characterParts) do
-        if part:IsA("BasePart") and part.Name:lower():match(partName:lower()) then
-            return part
+Boxes.Aim:AddInput('SAFOV', {
+    Default = '5',
+    Numeric = true, -- true / false, only allows numbers
+    Finished = true, -- true / false, only calls callback when you press enter
+
+    Text = 'Silent Aim Fov',
+    Tooltip = 'This is a tooltip', -- Information shown when you hover over the textbox
+
+    Placeholder = 'FOV: 1 - 20', -- placeholder text when the box is empty
+    -- MaxLength is also an option which is the max length of the text
+
+    Callback = function(v)
+        Silentaim.fov = v
+    end
+})
+
+Boxes.Aim:AddDropdown('HitBox', {
+    Values = {
+		"All",
+		"HumanoidRootPart",
+		"RightUpperLeg",
+		"LeftUpperLeg"
+	},
+    Default = 1, -- number index of the value / string
+    Multi = false, -- true / false, allows multiple choices to be selected
+
+    Text = 'HitBox',
+    Tooltip = 'Only Choose one!', -- Information shown when you hover over the dropdown
+
+    Callback = function(v)
+	    if v == "ALL" then
+            parts = {"RightUpperLeg", "LeftUpperLeg", "HeadHB", "HumanoidRootPart"}
+        elseif v == "Head" then
+            parts = {"HeadHB"}
+        elseif v == "HumanoidRootPart" then
+            parts = {"HumanoidRootPart"}
+        elseif v == "RightUpperLeg" then
+            parts = {"RightUpperLeg"}
+        elseif v == "LeftUpperLeg" then
+            parts = {"LeftUpperLeg"}
         end
-    end
-    return nil
-end
-
--- -------------------------------------
--- Hitbox Functions
--- -------------------------------------
-local function extendHitbox(player)
-    for _, partName in ipairs(defaultBodyParts) do
-        local part = player.Character and (player.Character:FindFirstChild(partName) or findClosestPart(player, partName))
-        if part and part:IsA("BasePart") then
-            savedPart(player, part)
-            part.CanCollide = not noCollisionEnabled
-            part.Transparency = hitboxTransparency / 10
-            part.Size = Vector3.new(hitboxSize, hitboxSize, hitboxSize)
-        end
-    end
-end
-
-local function isEnemy(player)
-    if teamCheck == "FFA" or teamCheck == "Everyone" then
-        return true
-    end
-    local localPlayerTeam = LocalPlayer.Team
-    return player.Team ~= localPlayerTeam
-end
-
-local function shouldExtendHitbox(player)
-    return isEnemy(player)
-end
-
-local function updateHitboxes()
-    for _, v in ipairs(Players:GetPlayers()) do
-        if v ~= LocalPlayer and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            if shouldExtendHitbox(v) then
-                extendHitbox(v)
-            else
-                restoredPart(v)
-            end
-        end
-    end
-end
-
--- -------------------------------------
--- Event Handlers
--- -------------------------------------
-local function onCharacterAdded(character)
-    task.wait(0.1)
-    if hitboxEnabled then
-        updateHitboxes()
-    end
-end
-
-local function onPlayerAdded(player)
-    player.CharacterAdded:Connect(onCharacterAdded)
-    player.CharacterRemoving:Connect(function()
-        restoredPart(player)
-        hitbox_original_properties[player] = nil
-    end)
-end
-
-local function checkForDeadPlayers()
-    for player, properties in pairs(hitbox_original_properties) do
-        if not player.Parent or not player.Character or not player.Character:IsDescendantOf(game) then
-            restoredPart(player)
-            hitbox_original_properties[player] = nil
-        end
-    end
-end
-
-Players.PlayerAdded:Connect(onPlayerAdded)
-
-for _, player in ipairs(Players:GetPlayers()) do
-    onPlayerAdded(player)
-end
-
-HitboxSection:NewButton("[CLICK THIS FIRST] Enable Hitbox", '?', function()
-    coroutine.wrap(function()
-        while true do
-            if hitboxEnabled then
-                updateHitboxes()
-                checkForDeadPlayers()
-            end
-            task.wait(0.1)
-        end
-    end)()
-end)
-
-HitboxSection:NewToggle("Enable Hitbox", '?', function(enabled)
-    hitboxEnabled = enabled
-    if not enabled then
-        for _, player in ipairs(Players:GetPlayers()) do
-            restoredPart(player)
-        end
-        hitbox_original_properties = {}
-    else
-        updateHitboxes()
-    end
-end)
-
-HitboxSection:NewSlider("Hitbox Size", '?', 25, 1, function(value)
-    hitboxSize = value
-    if hitboxEnabled then
-        updateHitboxes()
-    end
-end)
-
-HitboxSection:NewSlider("Hitbox Transparency", '?', 10, 1,  function(value)
-    hitboxTransparency = value
-    if hitboxEnabled then
-        updateHitboxes()
-    end
-end)
-
-HitboxSection:NewDropdown("Team Check", '?', {"FFA", "Team-Based", "Everyone"}, function(value)
-    teamCheck = value
-    if hitboxEnabled then
-        updateHitboxes()
-    end
-end)
-
-HitboxSection:NewToggle("No Collision", '?', function(enabled)
-    noCollisionEnabled = enabled
-    WarningText.Visible = enabled
-    coroutine.wrap(function()
-        while noCollisionEnabled do
-            if hitboxEnabled then
-                updateHitboxes()
-            end
-            task.wait(0.01)
-        end
-        if hitboxEnabled then
-            updateHitboxes()
-        end
-    end)()
-end)
-
-MainSection:NewToggle("AutoFarm", "?", function(bool)
-    getgenv().AutoFarm = bool
-
-    local runServiceConnection
-    local mouseDown = false
-    local player = game.Players.LocalPlayer
-    local camera = game.Workspace.CurrentCamera
-
-    game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = bool and "Infinite Ammo" or ""
-
-    function closestplayer()
-        local closestDistance = math.huge
-        local closestPlayer = nil
-
-        for _, enemyPlayer in pairs(game.Players:GetPlayers()) do
-            if enemyPlayer ~= player and enemyPlayer.TeamColor ~= player.TeamColor and enemyPlayer.Character then
-                local character = enemyPlayer.Character
-                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                local humanoid = character:FindFirstChild("Humanoid")
-                if humanoidRootPart and humanoid and humanoid.Health > 0 then
-                    local distance = (player.Character.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude
-                    if distance < closestDistance then
-                        closestDistance = distance
-                        closestPlayer = enemyPlayer
+        warn("Selected Target: " .. v .. ", Parts: " .. table.concat(parts, ", "))
+        
+        if Silentaim.active then
+            for _, v in pairs(game.Players:GetPlayers()) do
+                if v ~= game.Players.LocalPlayer and v.Character then
+                    for _, partName in ipairs(parts) do
+                        local part = v.Character:FindFirstChild(partName)
+                        if part then
+                            part.Transparency = 10
+                        end
                     end
                 end
             end
         end
-
-        return closestPlayer
     end
+})
 
-    local function AutoFarm()
-        game:GetService("ReplicatedStorage").wkspc.TimeScale.Value = 12
+--- >>> Main Code for Silent Aim (Hitbox Expander) <<< ---
+function getPlayersName()
+    for i, v in pairs(game:GetChildren()) do
+        if v.ClassName == "Players" then
+            return v.Name
+        end
+    end
+end
 
-        runServiceConnection = game:GetService("RunService").Stepped:Connect(function()
-            if getgenv().AutoFarm then
-                local closestPlayer = closestplayer()
-                if closestPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                    local enemyRootPart = closestPlayer.Character.HumanoidRootPart
+local players = getPlayersName()
+local localPlayer = game[players].LocalPlayer
 
-                    local targetPosition = enemyRootPart.Position - enemyRootPart.CFrame.LookVector * 2 + Vector3.new(0, 2, 0)
-                    player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-
-                    if closestPlayer.Character:FindFirstChild("Head") then
-                        local enemyHead = closestPlayer.Character.Head.Position
-                        camera.CFrame = CFrame.new(camera.CFrame.Position, enemyHead)
+coroutine.resume(coroutine.create(function()
+    while wait(1) do
+        coroutine.resume(coroutine.create(function()
+            if Silentaim.active then
+                for _, v in pairs(game[players]:GetPlayers()) do
+                    if v.Name ~= localPlayer.Name and v.Character then
+                        for _, partName in ipairs(parts) do
+                            local part = v.Character:FindFirstChild(partName)
+                            if part then
+                                part.Transparency = 10
+                                part.CanCollide = false
+                                part.Size = Vector3.new(Silentaim.fov, Silentaim.fov, Silentaim.fov)
+                            end
+                        end
                     end
+                end
+            end
+        end))
+    end
+end))
 
-                    if not mouseDown then
-                        mouse1press()
-                        mouseDown = true
+--- >>> > Anti Aim < <<< ---
+local spinSpeed = 10
+local gyro
+
+Boxes.AA:AddToggle('AntiAim', {
+    Text = 'Anti-Aim',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(value)
+        local character = game.Players.LocalPlayer.Character
+        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+        
+        if value then
+            -- game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.thirdperson.Value = true
+    
+            if humanoidRootPart then
+                local spin = Instance.new("BodyAngularVelocity")
+                spin.Name = "AntiAimSpin"
+                spin.AngularVelocity = Vector3.new(0, spinSpeed, 0)
+                spin.MaxTorque = Vector3.new(0, math.huge, 0)
+                spin.P = 500000
+                spin.Parent = humanoidRootPart
+    
+                gyro = Instance.new("BodyGyro")
+                gyro.Name = "AntiAimGyro"
+                gyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+                gyro.CFrame = humanoidRootPart.CFrame
+                gyro.P = 3000
+                gyro.Parent = humanoidRootPart
+            end
+        else
+            -- game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.thirdperson.Value = false
+    
+            if humanoidRootPart then
+                local spin = humanoidRootPart:FindFirstChild("AntiAimSpin")
+                if spin then
+                    spin:Destroy()
+                end
+    
+                if gyro then
+                    gyro:Destroy()
+                    gyro = nil
+                end
+            end
+        end
+    end
+})
+
+Boxes.AA:AddInput('AASPEED', {
+    Default = '10',
+    Numeric = true,
+    Finished = false,
+    Text = 'Power',
+    Tooltip = '',
+    Placeholder = '10 is lowest',
+    Callback = function(value)
+        spinSpeed = value
+
+        local character = game.Players.LocalPlayer.Character
+        local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+        if humanoidRootPart then
+            local spin = humanoidRootPart:FindFirstChild("AntiAimSpin")
+            if spin then
+                spin.AngularVelocity = Vector3.new(0, spinSpeed, 0)
+            end
+        end
+    end
+})
+
+local ESPSolo = loadstring(game:HttpGet("https://raw.githubusercontent.com/V3xOwnYou/Universalv1/main/SoloEsp"))();
+ESPSolo.Enabled = true;
+ESPSolo.BoxType = "Corner Box Esp";
+
+Boxes.Visual:AddToggle('CornerBox', {
+    Text = 'Corner Box',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(v)
+        ESPSolo.ShowBox = v;
+    end
+})
+
+Boxes.Visual:AddToggle('Name', {
+    Text = 'Name',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(v)
+        ESPSolo.ShowName = v;
+    end
+})
+
+Boxes.Visual:AddToggle('Health', {
+    Text = 'Health',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(v)
+        ESPSolo.ShowHealth = v;
+    end
+})
+
+Boxes.Visual:AddToggle('Tracer', {
+    Text = 'Tracer',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(v)
+        ESPSolo.ShowTracer = v;
+    end
+})
+
+Boxes.Visual:AddToggle('Distance', {
+    Text = 'Distance',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(v)
+        ESPSolo.ShowDistance = v;
+    end
+})
+
+--- >>> > Arm Visual < <<< ---
+
+local function ak(al)
+    return Vector3.new(al.R, al.G, al.B)
+end
+
+local am = "Plastic"
+Boxes.AVisual:AddDropdown('ATYPE', {
+    Values = { "Plastic", "ForceField", "Wood", "Grass" },
+    Default = 1,
+    Multi = false,
+    Text = 'Arm Mode',
+    Tooltip = 'This is a tooltip',
+
+    Callback = function(an)
+        am = an
+    end
+})
+
+local ao = Color3.new(50, 50, 50)
+Boxes.AVisual:AddLabel('Arm Color'):AddColorPicker('AColor', {
+    Default = Color3.new(50, 50, 50),
+    Title = 'Some color',
+    Transparency = 0,
+
+    Callback = function(ap)
+        ao = ap
+    end
+})
+
+local aq = false
+Boxes.AVisual:AddToggle('AChams', {
+    Text = 'Arm Chams',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(L)
+        aq = L
+        if aq then
+          spawn(function()
+            while true do
+              wait(.01)
+              if not aq then
+                break
+              else
+                local cameraArms = workspace.Camera:FindFirstChild("Arms")
+                if cameraArms then
+                  for ar, O in pairs(cameraArms:GetDescendants()) do
+                    if O.Name == 'Right Arm' or O.Name == 'Left Arm' then
+                      if O:IsA("BasePart") then
+                        O.Material = Enum.Material[am]
+                        O.Color = ao
+                      end
+                    elseif O:IsA("SpecialMesh") then
+                      if O.TextureId == '' then
+                        O.TextureId = 'rbxassetid://0'
+                        O.VertexColor = ak(ao)
+                      end
+                    elseif O.Name == 'L' or O.Name == 'R' then
+                      O:Destroy()
                     end
+                  end
+                end
+              end
+            end
+          end)
+        end
+    end
+})
+
+--- >>> > Gun Visual < <<< ---
+
+local at = "Plastic"
+Boxes.GVisual:AddDropdown('GTYPE', {
+    Values = { "Plastic", "ForceField", "Wood", "Grass" },
+    Default = 1,
+    Multi = false,
+    Text = 'Gun Mode',
+    Tooltip = 'This is a tooltip',
+
+    Callback = function(an)
+        at = an
+    end
+})
+
+local au = Color3.new(50, 50, 50)
+Boxes.GVisual:AddLabel('Gun Color'):AddColorPicker('GColor', {
+    Default = Color3.new(50, 50, 50),
+    Title = 'Some color',
+    Transparency = 0,
+
+    Callback = function(ap)
+        au = ap
+    end
+})
+
+local av = false;
+Boxes.GVisual:AddToggle('GChams', {
+    Text = 'Gun Chams',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(L)
+        av = L;
+        if av
+        then
+          spawn(function()
+            while true do wait(.01)
+              if not av then
+                break
+              else
+                if not workspace.Camera:FindFirstChild("Arms")
+                then
+                  wait()
                 else
-                    if mouseDown then
-                        mouse1release()
-                        mouseDown = false
+                  for ar, O in pairs(workspace.Camera.Arms:GetDescendants()) do
+                    if O:IsA("MeshPart")
+                    then
+                      O.Material = Enum.Material[at]
+                      O.Color = au
                     end
+                  end
                 end
-            else
-                if runServiceConnection then
-                    runServiceConnection:Disconnect()
-                    runServiceConnection = nil
-                end
-                if mouseDown then
-                    mouse1release()
-                    mouseDown = false
-                end
+              end
             end
-        end)
-    end
-
-    local function onCharacterAdded(character)
-        wait(0.5)
-        AutoFarm()
-    end
-
-    player.CharacterAdded:Connect(onCharacterAdded)
-
-    if bool then
-        wait(0.5)
-        AutoFarm()
-    else
-        game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = ""
-        getgenv().AutoFarm = false
-        game:GetService("ReplicatedStorage").wkspc.TimeScale.Value = 1
-        if runServiceConnection then
-            runServiceConnection:Disconnect()
-            runServiceConnection = nil
-        end
-        if mouseDown then
-            mouse1release()
-            mouseDown = false
+          end)
         end
     end
-end)
+})
 
-
-getgenv().triggerb = false
-local teamcheck = "Team-Based"
-local delay = 0.2
-local isAlive = true
-
-triggerbot:NewToggle("Enable Triggerbot", "triggerbot on or off", function(state)
-    getgenv().triggerb = state
-end)
-
-triggerbot:NewDropdown("Team Check Mode", "teamchecking mode", {"FFA", "Team-Based", "Everyone"}, function(selected)
-    teamcheck = selected
-end)
-
-triggerbot:NewSlider("Shot Delay", "delay between shots (1-10)", 10, 1, function(value)
-    delay = value / 10
-end)
-
-local function isEnemy(targetPlayer)
-    if teamcheck == "FFA" then
-        return true
-    elseif teamcheck == "Everyone" then
-        return targetPlayer ~= game.Players.LocalPlayer
-    elseif teamcheck == "Team-Based" then
-        local localPlayerTeam = game.Players.LocalPlayer.Team
-        return targetPlayer.Team ~= localPlayerTeam
-    end
-    return false
+local rainbowEnabled = false
+local c = 1
+function zigzag(X) 
+  return math.acos(math.cos(X * math.pi)) / math.pi 
 end
 
-local function checkhealth()
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
+Boxes.GVisual:AddToggle('GRB', {
+    Text = 'Rainbow Chams v1',
+    Default = false,
+    Tooltip = '',
 
-    if humanoid then
-        humanoid.HealthChanged:Connect(function(health)
-            isAlive = health > 0
-        end)
+    Callback = function(L)
+        rainbowEnabled = state
+    end
+})
+
+game:GetService("RunService").RenderStepped:Connect(function() 
+    if game.Workspace.Camera:FindFirstChild('Arms') and rainbowEnabled then 
+      for i, v in pairs(game.Workspace.Camera.Arms:GetDescendants()) do 
+        if v.ClassName == 'MeshPart' then 
+          v.Color = Color3.fromHSV(zigzag(c), 1, 1)
+          c = c + .0001
+        end 
+      end 
+    end 
+end)
+
+local rainbowEnabled = false
+local c = 0
+local hueIncrement = 0.1 
+
+function updateColors()
+    for i, v in pairs(game.Workspace.Camera.Arms:GetDescendants()) do
+      if v.ClassName == 'MeshPart' then
+        v.Color = Color3.fromHSV(c, 1, 1)
+      end
     end
 end
 
-game.Players.LocalPlayer.CharacterAdded:Connect(checkhealth)
-checkhealth()
+Boxes.GVisual:AddToggle('GRB', {
+    Text = 'Rainbow Chams v2',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(L)
+        rainbowEnabled = state
+    end
+})
 
 game:GetService("RunService").RenderStepped:Connect(function()
-    if getgenv().triggerb and isAlive then
-        local player = game.Players.LocalPlayer
-        local mouse = player:GetMouse()
-        local target = mouse.Target
-        if target and target.Parent:FindFirstChild("Humanoid") and target.Parent.Name ~= player.Name then
-            local targetPlayer = game:GetService("Players"):FindFirstChild(target.Parent.Name)
-            if targetPlayer and isEnemy(targetPlayer) then
-                mouse1press()
-                wait(delay)
-                mouse1release()
-            end
-        end
+    if game.Workspace.Camera:FindFirstChild('Arms') and rainbowEnabled then
+      c = c + hueIncrement
+      if c >= 1 then
+        c = c % 1 -- [0, 1] range
+      end
+      updateColors()
     end
 end)
 
+Boxes.Mods:AddToggle('Infv1', {
+    Text = 'Infinite Ammo v1',
+    Default = false,
+    Tooltip = '',
 
-
-
-
-
-
-
-
-
-local Gun = Window:NewTab("Gun Modded")
-local GunmodsSection = Gun:NewSection("> Overpower Gun <")
-
-GunmodsSection:NewToggle("Infinite Ammo v1", "?", function(v)
-    game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = v and "Infinite Ammo" or ""
-end)
+    Callback = function(v)
+        game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = v and "Infinite Ammo" or ""
+    end
+})
 
 local SettingsInfinite = false
-GunmodsSection:NewToggle("Infinite Ammo v2", "?", function(K)
-    SettingsInfinite = K
-    if SettingsInfinite then
-        game:GetService("RunService").Stepped:connect(function()
-            pcall(function()
-                if SettingsInfinite then
-                    local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
-                    playerGui.GUI.Client.Variables.ammocount.Value = 99
-                    playerGui.GUI.Client.Variables.ammocount2.Value = 99
-                end
+Boxes.Mods:AddToggle('infv2', {
+    Text = 'Infinite ammo v2',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(K)
+        SettingsInfinite = K
+        if SettingsInfinite then
+            game:GetService("RunService").Stepped:connect(function()
+                pcall(function()
+                    if SettingsInfinite then
+                        local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
+                        playerGui.GUI.Client.Variables.ammocount.Value = 99
+                        playerGui.GUI.Client.Variables.ammocount2.Value = 99
+                    end
+                end)
             end)
-        end)
+        end
     end
-end)
+})
 
 local originalValues = { -- saves/stores the original Values of the gun value :3
     FireRate = {},
@@ -437,148 +780,212 @@ local originalValues = { -- saves/stores the original Values of the gun value :3
     Recoil = {}
 }
 
-GunmodsSection:NewToggle("Fast Reload", "?", function(x)
-    for _, v in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do
-        if v:FindFirstChild("ReloadTime") then
-            if x then
-                if not originalValues.ReloadTime[v] then
-                    originalValues.ReloadTime[v] = v.ReloadTime.Value
-                end
-                v.ReloadTime.Value = 0.01
-            else
-                if originalValues.ReloadTime[v] then
-                    v.ReloadTime.Value = originalValues.ReloadTime[v]
-                else
-                    v.ReloadTime.Value = 0.8 
-                end
-            end
-        end
-        if v:FindFirstChild("EReloadTime") then
-            if x then
-                if not originalValues.EReloadTime[v] then
-                    originalValues.EReloadTime[v] = v.EReloadTime.Value
-                end
-                v.EReloadTime.Value = 0.01
-            else
-                if originalValues.EReloadTime[v] then
-                    v.EReloadTime.Value = originalValues.EReloadTime[v]
-                else
-                    v.EReloadTime.Value = 0.8 
-                end
-            end
-        end
-    end
-end)
+Boxes.Mods:AddToggle('FastReload', {
+    Text = 'Fast Reload',
+    Default = false,
+    Tooltip = '',
 
-GunmodsSection:NewToggle("Fast Fire Rate", "?", function(state)
-    for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
-        if v.Name == "FireRate" or v.Name == "BFireRate" then
-            if state then
-                if not originalValues.FireRate[v] then
-                    originalValues.FireRate[v] = v.Value
-                end
-                v.Value = 0.02
-            else
-                if originalValues.FireRate[v] then
-                    v.Value = originalValues.FireRate[v]
+    Callback = function(x)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetChildren()) do
+            if v:FindFirstChild("ReloadTime") then
+                if x then
+                    if not originalValues.ReloadTime[v] then
+                        originalValues.ReloadTime[v] = v.ReloadTime.Value
+                    end
+                    v.ReloadTime.Value = 0.01
                 else
-                    v.Value = 0.8 
+                    if originalValues.ReloadTime[v] then
+                        v.ReloadTime.Value = originalValues.ReloadTime[v]
+                    else
+                        v.ReloadTime.Value = 0.8 
+                    end
+                end
+            end
+            if v:FindFirstChild("EReloadTime") then
+                if x then
+                    if not originalValues.EReloadTime[v] then
+                        originalValues.EReloadTime[v] = v.EReloadTime.Value
+                    end
+                    v.EReloadTime.Value = 0.01
+                else
+                    if originalValues.EReloadTime[v] then
+                        v.EReloadTime.Value = originalValues.EReloadTime[v]
+                    else
+                        v.EReloadTime.Value = 0.8 
+                    end
                 end
             end
         end
     end
-end)
+})
 
-GunmodsSection:NewToggle("Always Auto", "?", function(state)
-    for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
-        if v.Name == "Auto" or v.Name == "AutoFire" or v.Name == "Automatic" or v.Name == "AutoShoot" or v.Name == "AutoGun" then
-            if state then
-                if not originalValues.Auto[v] then
-                    originalValues.Auto[v] = v.Value
-                end
-                v.Value = true
-            else
-                if originalValues.Auto[v] then
-                    v.Value = originalValues.Auto[v]
+Boxes.Mods:AddToggle('Fastfirerate', {
+    Text = 'Fast Fire Rate',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(state)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
+            if v.Name == "FireRate" or v.Name == "BFireRate" then
+                if state then
+                    if not originalValues.FireRate[v] then
+                        originalValues.FireRate[v] = v.Value
+                    end
+                    v.Value = 0.02
                 else
-                    v.Value = false 
+                    if originalValues.FireRate[v] then
+                        v.Value = originalValues.FireRate[v]
+                    else
+                        v.Value = 0.8 
+                    end
                 end
             end
         end
     end
-end)
+})
 
-GunmodsSection:NewToggle("No Spread", "?", function(state)
-    for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
-        if v.Name == "MaxSpread" or v.Name == "Spread" or v.Name == "SpreadControl" then
-            if state then
-                if not originalValues.Spread[v] then
-                    originalValues.Spread[v] = v.Value
-                end
-                v.Value = 0
-            else
-                if originalValues.Spread[v] then
-                    v.Value = originalValues.Spread[v]
+Boxes.Mods:AddToggle('AlwaysAuto', {
+    Text = 'Always Auto',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(state)
+        for _, v in pairs(game.ReplicatedStorage.Weapons:GetDescendants()) do
+            if v.Name == "Auto" or v.Name == "AutoFire" or v.Name == "Automatic" or v.Name == "AutoShoot" or v.Name == "AutoGun" then
+                if state then
+                    if not originalValues.Auto[v] then
+                        originalValues.Auto[v] = v.Value
+                    end
+                    v.Value = true
                 else
-                    v.Value = 1 
+                    if originalValues.Auto[v] then
+                        v.Value = originalValues.Auto[v]
+                    else
+                        v.Value = false 
+                    end
                 end
             end
         end
     end
-end)
+})
 
-GunmodsSection:NewToggle("No Recoil", "?", function(state)
-    for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
-        if v.Name == "RecoilControl" or v.Name == "Recoil" then
-            if state then
-                if not originalValues.Recoil[v] then
-                    originalValues.Recoil[v] = v.Value
-                end
-                v.Value = 0
-            else
-                if originalValues.Recoil[v] then
-                    v.Value = originalValues.Recoil[v]
+Boxes.Mods:AddToggle('NoSpread', {
+    Text = 'No Spread',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(state)
+        for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+            if v.Name == "MaxSpread" or v.Name == "Spread" or v.Name == "SpreadControl" then
+                if state then
+                    if not originalValues.Spread[v] then
+                        originalValues.Spread[v] = v.Value
+                    end
+                    v.Value = 0
                 else
-                    v.Value = 1 
+                    if originalValues.Spread[v] then
+                        v.Value = originalValues.Spread[v]
+                    else
+                        v.Value = 1 
+                    end
                 end
             end
         end
     end
-end)
+})
 
+Boxes.Mods:AddToggle('NoRecoil', {
+    Text = 'No Recoil',
+    Default = false,
+    Tooltip = '',
 
-local Player = Window:NewTab("Player")
-local PlayerSection = Player:NewSection("> Fly Hacks <")
-PlayerSection:NewToggle("Fly", "Allows the player to fly", function(state)
-  if state then
-    startFly()
-  else
-    endFly()
-  end
-end)
-PlayerSection:NewSlider("Fly Speed", "Allows for faster/slower flight", 500, 1, function(s)
-  flySettings.flyspeed = s
-end)
+    Callback = function(state)
+        for _, v in pairs(game:GetService("ReplicatedStorage").Weapons:GetDescendants()) do
+            if v.Name == "RecoilControl" or v.Name == "Recoil" then
+                if state then
+                    if not originalValues.Recoil[v] then
+                        originalValues.Recoil[v] = v.Value
+                    end
+                    v.Value = 0
+                else
+                    if originalValues.Recoil[v] then
+                        v.Value = originalValues.Recoil[v]
+                    else
+                        v.Value = 1 
+                    end
+                end
+            end
+        end
+    end
+})
 
-PlayerSection:NewLabel("> Speed Power <")
+Boxes.PlayerMods:AddLabel('Fly'):AddKeyPicker('Fly', {
+    Default = 'X',
+    SyncToggleState = false,
+    Mode = 'Toggle',
+    Text = 'Auto lockpick safes',
+    NoUI = false,
+
+    Callback = function(state)
+        if state then
+            startFly()
+          else
+            endFly()
+          end
+    end,
+})
+
+Boxes.PlayerMods:AddInput('FlySpeed', {
+    Default = '3',
+    Numeric = true,
+    Finished = false,
+    Text = 'Fly Speed',
+    Tooltip = 'This is a tooltip',
+    Placeholder = 'Idk Put any',
+    Callback = function(s)
+        flySettings.flyspeed = s
+    end
+})
 
 local settings = {WalkSpeed = 16}
 local isWalkSpeedEnabled = false
 
-PlayerSection:NewToggle("Custom WalkSpeed", "Toggle custom walkspeed", function(enabled)
-    isWalkSpeedEnabled = enabled
-end)
+Boxes.PlayerMods:AddToggle('PWS', {
+    Text = 'Change Walk Speed',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(state)
+        isWalkSpeedEnabled = state
+    end
+})
 
 local walkMethods = {"Velocity", "Vector", "CFrame"}
 local selectedWalkMethod = walkMethods[1]
 
-PlayerSection:NewDropdown("Walk Method", "Choose walk method", walkMethods, function(selected)
-    selectedWalkMethod = selected
-end)
+Boxes.PlayerMods:AddDropdown('PWSM', {
+    Values = { 'Velocity', 'Vector', 'CFrame' },
+    Default = 1,
+    Multi = false,
+    Text = 'Walk Speed Mode',
+    Tooltip = 'This is a tooltip',
 
-PlayerSection:NewSlider("Walkspeed Power", "Adjust walkspeed power", 500, 16, function(value)
-    settings.WalkSpeed = value
-end)
+    Callback = function(selected)
+        selectedWalkMethod = selected
+    end
+})
+
+Boxes.PlayerMods:AddInput('WalkSpeed', {
+    Default = '16',
+    Numeric = true,
+    Finished = false,
+    Text = 'Power',
+    Tooltip = '',
+    Placeholder = '16 is normal',
+    Callback = function(value)
+        settings.WalkSpeed = value
+    end
+})
 
 local function wsm(player, deltaTime)
     local character = player.Character
@@ -610,1004 +1017,177 @@ game:GetService("RunService").Stepped:Connect(function(deltaTime)
     end
 end)
 
-
-PlayerSection:NewLabel("> JumpPower <")
---PlayerSection:NewSection("JumpPower Settings")
-
 local IJ = false
-PlayerSection:NewToggle("Infinite Jump", "Toggle infinite jump", function(state)
-    IJ = state
-    game:GetService("UserInputService").JumpRequest:Connect(function()
-        if IJ then
-            game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
-        end
-    end)
-end)
+Boxes.PlayerMods:AddToggle('CJP', {
+    Text = 'Change Jump Power',
+    Default = false,
+    Tooltip = '',
 
+    Callback = function(state)
+        IJ = state
+        game:GetService("UserInputService").JumpRequest:Connect(function()
+            if IJ then
+                game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+            end
+        end)
+    end
+})
 
 local isJumpPowerEnabled = false
+Boxes.PlayerMods:AddToggle('CJP', {
+    Text = 'Custom Jump Power',
+    Default = false,
+    Tooltip = '',
 
-PlayerSection:NewToggle("Custom JumpPower", "Toggle custom jumppower", function(enabled)
-    isJumpPowerEnabled = enabled
-end)
+    Callback = function(state)
+        isJumpPowerEnabled = state
+    end
+})
 
 local jumpMethods = {"Velocity", "Vector", "CFrame"}
 local selectedJumpMethod = jumpMethods[1]
 
-PlayerSection:NewDropdown("Jump Method", "Choose jump method", jumpMethods, function(selected)
-    selectedJumpMethod = selected
-end)
+Boxes.PlayerMods:AddDropdown('CJPP', {
+    Values = jumpMethods,
+    Default = 1,
+    Multi = false,
+    Text = 'Jump Power Mode',
+    Tooltip = 'This is a tooltip',
 
-PlayerSection:NewSlider("Change JumpPower", "Adjust jumppower", 500, 30, function(value)
-    local player = game:GetService("Players").LocalPlayer
-    local humanoid = player.Character:WaitForChild("Humanoid")
-    humanoid.UseJumpPower = true
-    humanoid.Jumping:Connect(function(isActive)
-        if isJumpPowerEnabled and isActive then
-            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
-            if rootPart then
-                if selectedJumpMethod == "Velocity" then
-                    rootPart.Velocity = rootPart.Velocity * Vector3.new(1, 0, 1) + Vector3.new(0, value, 0)
-                elseif selectedJumpMethod == "Vector" then
-                    rootPart.Velocity = Vector3.new(0, value, 0)
-                elseif selectedJumpMethod == "CFrame" then
-                    player.Character:SetPrimaryPartCFrame(player.Character:GetPrimaryPartCFrame() + Vector3.new(0, value, 0))
+    Callback = function(selected)
+        selectedJumpMethod = selected
+    end
+})
+
+Boxes.PlayerMods:AddInput('Power', {
+    Default = '30',
+    Numeric = true,
+    Finished = false,
+    Text = 'Power',
+    Tooltip = '',
+    Placeholder = '30 is idk',
+    Callback = function(value)
+        local player = game:GetService("Players").LocalPlayer
+        local humanoid = player.Character:WaitForChild("Humanoid")
+        humanoid.UseJumpPower = true
+        humanoid.Jumping:Connect(function(isActive)
+            if isJumpPowerEnabled and isActive then
+                local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    if selectedJumpMethod == "Velocity" then
+                        rootPart.Velocity = rootPart.Velocity * Vector3.new(1, 0, 1) + Vector3.new(0, value, 0)
+                    elseif selectedJumpMethod == "Vector" then
+                        rootPart.Velocity = Vector3.new(0, value, 0)
+                    elseif selectedJumpMethod == "CFrame" then
+                        player.Character:SetPrimaryPartCFrame(player.Character:GetPrimaryPartCFrame() + Vector3.new(0, value, 0))
+                    end
                 end
             end
-        end
-    end)
-end)
+        end)
+    end
+})
 
-PlayerSection:NewLabel("> Anti Aim <")
+local original_names = {
+    GUIName = nil,
+    GUIName2 = nil,
+    KillFeed = {},
+    WinnerName = nil,
+    ScorecardName = nil
+}
 
-local spinSpeed = 10
-local gyro
+local hidename = false
+local runLoop = false
 
-PlayerSection:NewToggle("Anti-Aim v1", "Toggle anti-aim feature", function(value)
-    local character = game.Players.LocalPlayer.Character
-    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+local function names()
+    local edited_name = "SKEET.WIN"
+    local edited_killfeed = "ren is my master :3"
+
+    local gui = LocalPlayer.PlayerGui
+    gui.GUI_Scorecard.Scorecard.Scrolling.Visible = false
+    gui.Menew_Main.Container.PlrName.Text = edited_name
+    gui.Menew_Main.Container.PlrName2.Text = edited_name
+    Workspace.KillFeed["1"].Killer.Value = edited_killfeed
+    Workspace.KillFeed["2"].Killer.Value = edited_killfeed
+    Workspace.KillFeed["3"].Killer.Value = edited_killfeed
+    Workspace.KillFeed["4"].Killer.Value = edited_killfeed
+    Workspace.KillFeed["5"].Killer.Value = edited_killfeed
+    Workspace.KillFeed["6"].Killer.Value = edited_killfeed
+    gui.GUI.Winner.Visible = false
+    gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text = "SKEET.WIN"
+end
+
+local function restores_name()
+    local gui = LocalPlayer.PlayerGui
+
+    if original_names.GUIName then
+        gui.Menew_Main.Container.PlrName.Text = original_names.GUIName
+    end
+
+    if original_names.GUIName2 then
+        gui.Menew_Main.Container.PlrName2.Text = original_names.GUIName2
+    end
+
+    for i, v in pairs(original_names.KillFeed) do
+        Workspace.KillFeed[tostring(i)].Killer.Value = v
+    end
+
+    if original_names.WinnerName ~= nil then
+        gui.GUI.Winner.Visible = original_names.WinnerName
+    end
+
+    if original_names.ScorecardName then
+        gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text = original_names.ScorecardName
+    end
+end
+
+Boxes.PlayerMods:AddToggle('HName', {
+    Text = 'Hide Name',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(enabled)
+        hidename = enabled
+        runLoop = enabled
     
-    if value then
-        -- game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.thirdperson.Value = true
-
-        if humanoidRootPart then
-            local spin = Instance.new("BodyAngularVelocity")
-            spin.Name = "AntiAimSpin"
-            spin.AngularVelocity = Vector3.new(0, spinSpeed, 0)
-            spin.MaxTorque = Vector3.new(0, math.huge, 0)
-            spin.P = 500000
-            spin.Parent = humanoidRootPart
-
-            gyro = Instance.new("BodyGyro")
-            gyro.Name = "AntiAimGyro"
-            gyro.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-            gyro.CFrame = humanoidRootPart.CFrame
-            gyro.P = 3000
-            gyro.Parent = humanoidRootPart
-        end
-    else
-        -- game:GetService("Players").LocalPlayer.PlayerGui.GUI.Client.Variables.thirdperson.Value = false
-
-        if humanoidRootPart then
-            local spin = humanoidRootPart:FindFirstChild("AntiAimSpin")
-            if spin then
-                spin:Destroy()
+        if hidename then
+            local gui = LocalPlayer.PlayerGui
+            original_names.GUIName = gui.Menew_Main.Container.PlrName.Text
+            original_names.GUIName2 = gui.Menew_Main.Container.PlrName2.Text
+            original_names.WinnerName = gui.GUI.Winner.Visible
+            original_names.ScorecardName = gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text
+    
+            for i = 1, 6 do
+                original_names.KillFeed[i] = Workspace.KillFeed[tostring(i)].Killer.Value
             end
-
-            if gyro then
-                gyro:Destroy()
-                gyro = nil
-            end
-        end
-    end
-end)
-
-PlayerSection:NewSlider("Spin Speed", "Adjust the speed of the anti-aim spin", 100, 10, function(value)
-    spinSpeed = value
-
-    local character = game.Players.LocalPlayer.Character
-    local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
-    if humanoidRootPart then
-        local spin = humanoidRootPart:FindFirstChild("AntiAimSpin")
-        if spin then
-            spin.AngularVelocity = Vector3.new(0, spinSpeed, 0)
-        end
-    end
-end)
-
-
-
-
-PlayerSection:NewLabel("> Object Teleport <")
-
-local debris_selected = "Both"
-local debris_options = {"DeadHP", "DeadAmmo", "Both"}
-local isCollecting = false
-
-PlayerSection:NewToggle("Enable Collect debris", "object teleport to you", function(enabled)
-    isCollecting = enabled
-    if enabled then
-        managePickups()
-    end
-end)
-
-PlayerSection:NewDropdown("Select Object", "Choose DeadHP, DeadAmmo, or Both", debris_options, function(selection)
-    debris_selected = selection
-end)
-
-function managePickups()
-    spawn(function()
-        while isCollecting do
-            wait(0.1)
-            pcall(function()
-                local player = game.Players.LocalPlayer
-                local character = player.Character
-                if character then
-                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-                    if humanoidRootPart then
-                        for _, v in pairs(game.Workspace.Debris:GetChildren()) do
-                            if (debris_selected == "DeadHP" and v.Name == "DeadHP") or
-                               (debris_selected == "DeadAmmo" and v.Name == "DeadAmmo") or
-                               (debris_selected == "Both" and (v.Name == "DeadHP" or v.Name == "DeadAmmo")) then
-                                --/ dont ask i was trying something out
-                                --   local offsetX = math.random(-5, 5) / 10
-                                --   local offsetY = math.random(1, 3) / 10
-                                --   local offsetZ = math.random(-5, 5) / 10
-                                --   v.CFrame = rootPart.CFrame * CFrame.new(offsetX, offsetY, offsetZ)
-                                v.CFrame = humanoidRootPart.CFrame * CFrame.new(0, 0.2, 0)
-                            end
-                        end
-                    end
+    
+            --  loop
+            spawn(function()
+                while runLoop do
+                    pcall(names)
+                    wait(0.2)
                 end
             end)
-        end
-    end)
-end
-
-
-PlayerSection:NewLabel("> Useful Cheat <")
-
-PlayerSection:NewTextBox('TimeScale', '?', function(TimeScaleFR)
-  game:GetService("ReplicatedStorage").wkspc.TimeScale.Value = TimeScaleFR -- idk why it breaks when i do slider
-end)
-PlayerSection:NewLabel("> Misc <")
-
-PlayerSection:NewSlider("FOV Arsenal", "?", 120, 0, function(num)
-  game:GetService("Players").LocalPlayer.Settings.FOV.Value = num
-end)
-local isNoClipEnabled = false
-
-PlayerSection:NewToggle("Toggle NoClip", "?", function(enabled) -- go through wall wowie
-    isNoClipEnabled = enabled
-    local player = game.Players.LocalPlayer
-
-    local function toggleNoClip()
-        while isNoClipEnabled do
-            local character = player.Character
-            if character then
-                for _, part in pairs(character:GetDescendants()) do
-                    if part:IsA("BasePart") then
-                        part.CanCollide = false
-                    end
-                end
-            end
-            game:GetService("RunService").Stepped:Wait()
-        end
-
-        local character = player.Character
-        if character then
-            for _, part in pairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end
-    end
-
-    if isNoClipEnabled then
-        spawn(toggleNoClip)
-    end
-end)
-
-game.Players.LocalPlayer.CharacterAdded:Connect(function(character)
-    if isNoClipEnabled then
-        spawn(function()
-            while isNoClipEnabled do
-                if character then
-                    for _, part in pairs(character:GetDescendants()) do
-                        if part:IsA("BasePart") then
-                            part.CanCollide = false
-                        end
-                    end
-                end
-                game:GetService("RunService").Stepped:Wait()
-            end
-
-            for _, part in pairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end)
-    end
-end)
-
-local xrayOn = false
-PlayerSection:NewToggle("Toggle Xray", "WallXray lol", function(enabled) -- xray go brrrrrrrr
-  xrayOn = enabled
-
-  if xrayOn then
-    for _, descendant in pairs(workspace:GetDescendants()) do
-      if descendant:IsA("BasePart") then
-        if not descendant:FindFirstChild("OriginalTransparency") then
-          local originalTransparency = Instance.new("NumberValue")
-          originalTransparency.Name = "OriginalTransparency"
-          originalTransparency.Value = descendant.Transparency
-          originalTransparency.Parent = descendant
-        end
-        descendant.Transparency = 0.5
-      end
-    end
-  else
-    for _, descendant in pairs(workspace:GetDescendants()) do
-      if descendant:IsA("BasePart") then
-        if descendant:FindFirstChild("OriginalTransparency") then
-          descendant.Transparency = descendant.OriginalTransparency.Value
-          descendant.OriginalTransparency:Destroy()
-        end
-      end
-    end
-  end
-end)
-
-
-local Skins = Window:NewTab("Color Skins")
-local Random = Skins:NewSection("> Arm Skins <")
-
-local function ak(al)
-  return Vector3.new(al.R, al.G, al.B)
-end
-
-local am = "Plastic"
-Random:NewDropdown("Arm Material", "?", { "Plastic", "ForceField", "Wood", "Grass" }, function(an)
-  am = an
-end)
-
-local ao = Color3.new(50, 50, 50)
-Random:NewColorPicker('Arm Color', "?", Color3.fromRGB(50, 50, 50), function(ap)
-  ao = ap
-end)
-
-local aq = false
-Random:NewToggle("Arm Charms", "?", function(L)
-  aq = L
-  if aq then
-    spawn(function()
-      while true do
-        wait(.01)
-        if not aq then
-          break
         else
-          local cameraArms = workspace.Camera:FindFirstChild("Arms")
-          if cameraArms then
-            for ar, O in pairs(cameraArms:GetDescendants()) do
-              if O.Name == 'Right Arm' or O.Name == 'Left Arm' then
-                if O:IsA("BasePart") then
-                  O.Material = Enum.Material[am]
-                  O.Color = ao
-                end
-              elseif O:IsA("SpecialMesh") then
-                if O.TextureId == '' then
-                  O.TextureId = 'rbxassetid://0'
-                  O.VertexColor = ak(ao)
-                end
-              elseif O.Name == 'L' or O.Name == 'R' then
-                O:Destroy()
-              end
-            end
-          end
-        end
-      end
-    end)
-  end
-end)
-
-
-Random:NewLabel("> Gun Skin <")
-
-local at = "Plastic"
-Random:NewDropdown("Gun Material", "?", { "Plastic", "ForceField", "Wood", "Grass" }, function(an)
-  at = an
-end)
-local au = Color3.new(50, 50, 50)
-Random:NewColorPicker('Gun Color', "?", Color3.fromRGB(50, 50, 50), function(ap)
-  au = ap
-end)
-local av = false;
-Random:NewToggle("Gun Charms", "?", function(L)
-  av = L;
-  if av
-  then
-    spawn(function()
-      while true do wait(.01)
-        if not av then
-          break
-        else
-          if not workspace.Camera:FindFirstChild("Arms")
-          then
-            wait()
-          else
-            for ar, O in pairs(workspace.Camera.Arms:GetDescendants()) do
-              if O:IsA("MeshPart")
-              then
-                O.Material = Enum.Material[at]
-                O.Color = au
-              end
-            end
-          end
-        end
-      end
-    end)
-  end
-end)
-
-Random:NewLabel("> Rainbow Gun <")
-
-local rainbowEnabled = false
-local c = 1
-function zigzag(X) 
-  return math.acos(math.cos(X * math.pi)) / math.pi 
-end
-
-Random:NewToggle("Rainbow Gun v1", "?", function(state)
-  rainbowEnabled = state
-end)
-
-game:GetService("RunService").RenderStepped:Connect(function() 
-  if game.Workspace.Camera:FindFirstChild('Arms') and rainbowEnabled then 
-    for i, v in pairs(game.Workspace.Camera.Arms:GetDescendants()) do 
-      if v.ClassName == 'MeshPart' then 
-        v.Color = Color3.fromHSV(zigzag(c), 1, 1)
-        c = c + .0001
-      end 
-    end 
-  end 
-end)
-
-local rainbowEnabled = false
-local c = 0
-local hueIncrement = 0.1 
-
-function updateColors()
-  for i, v in pairs(game.Workspace.Camera.Arms:GetDescendants()) do
-    if v.ClassName == 'MeshPart' then
-      v.Color = Color3.fromHSV(c, 1, 1)
-    end
-  end
-end
-
-Random:NewToggle("Rainbow Gun v2 [Crazy Fast Animation]", "?", function(state)
-  rainbowEnabled = state
-end)
-
-game:GetService("RunService").RenderStepped:Connect(function()
-  if game.Workspace.Camera:FindFirstChild('Arms') and rainbowEnabled then
-    c = c + hueIncrement
-    if c >= 1 then
-      c = c % 1 -- [0, 1] range
-    end
-    updateColors()
-  end
-end)
-
-
-local Extra = Window:NewTab("Extra")
-local Extra = Extra:NewSection("Random")
-
-local function enableParticles()
-    for i, v in pairs(game:GetDescendants()) do
-      if v:IsA("ParticleEmitter") then
-        v.Parent = game.Players.LocalPlayer.Character["Particle Area"]
-      end
-    end
-  end
-  
-  local function disableParticles()
-    for i, v in pairs(game:GetDescendants()) do
-      if v:IsA("ParticleEmitter") then
-        v.Parent = workspace 
-      end
-    end
-  end
-  
-  Extra:NewToggle("Mess up your screen lol", "?", function(state)
-    if state then
-      enableParticles()
-    else
-      disableParticles()
-    end
-  end)
-
-  local Players = game:GetService("Players")
-  local LocalPlayer = Players.LocalPlayer
-  
-  local original_stats = { Score = nil, Kills = nil }
-  Extra:NewToggle("Max Level???", "e", function(bool)
-      local stats = LocalPlayer.CareerStatsCache
-      if bool then
-          if not original_stats.Score then
-              original_stats.Score = stats.Score.Value
-          end
-          if not original_stats.Kills then
-              original_stats.Kills = stats.Kills.Value
-          end
-          stats.Score.Value = 1e18
-          stats.Kills.Value = 1e14
-      else
-          if original_stats.Score and original_stats.Kills then
-              stats.Score.Value = original_stats.Score
-              stats.Kills.Value = original_stats.Kills
-          end
-      end
-  end)
-  
-  local Players = game:GetService("Players")
-  local LocalPlayer = Players.LocalPlayer
-  local Workspace = game:GetService("Workspace")
-  
-  local original_names = {
-      GUIName = nil,
-      GUIName2 = nil,
-      KillFeed = {},
-      WinnerName = nil,
-      ScorecardName = nil
-  }
-  
-  local hidename = false
-  local runLoop = false
-  
-  local function names()
-      local edited_name = SKEET.WIN"
-      local edited_killfeed = "UwU im a horny femboy who needs a big BBC"
-  
-      local gui = LocalPlayer.PlayerGui
-      gui.GUI_Scorecard.Scorecard.Scrolling.Visible = false
-      gui.Menew_Main.Container.PlrName.Text = edited_name
-      gui.Menew_Main.Container.PlrName2.Text = edited_name
-      Workspace.KillFeed["1"].Killer.Value = edited_killfeed
-      Workspace.KillFeed["2"].Killer.Value = edited_killfeed
-      Workspace.KillFeed["3"].Killer.Value = edited_killfeed
-      Workspace.KillFeed["4"].Killer.Value = edited_killfeed
-      Workspace.KillFeed["5"].Killer.Value = edited_killfeed
-      Workspace.KillFeed["6"].Killer.Value = edited_killfeed
-      gui.GUI.Winner.Visible = false
-      gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text = "SKEET.WIN"
-  end
-  
-  local function restores_name()
-      local gui = LocalPlayer.PlayerGui
-  
-      if original_names.GUIName then
-          gui.Menew_Main.Container.PlrName.Text = original_names.GUIName
-      end
-  
-      if original_names.GUIName2 then
-          gui.Menew_Main.Container.PlrName2.Text = original_names.GUIName2
-      end
-  
-      for i, v in pairs(original_names.KillFeed) do
-          Workspace.KillFeed[tostring(i)].Killer.Value = v
-      end
-  
-      if original_names.WinnerName ~= nil then
-          gui.GUI.Winner.Visible = original_names.WinnerName
-      end
-  
-      if original_names.ScorecardName then
-          gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text = original_names.ScorecardName
-      end
-  end
-  
-  Extra:NewToggle("change Name", "weird name", function(enabled) -- its not perfect, it doesnt change all your name in the killfeed :shrug:
-      hidename = enabled
-      runLoop = enabled
-  
-      if hidename then
-          local gui = LocalPlayer.PlayerGui
-          original_names.GUIName = gui.Menew_Main.Container.PlrName.Text
-          original_names.GUIName2 = gui.Menew_Main.Container.PlrName2.Text
-          original_names.WinnerName = gui.GUI.Winner.Visible
-          original_names.ScorecardName = gui.GUI_Scorecard.Scorecard.PlayerCard.Username.Text
-  
-          for i = 1, 6 do
-              original_names.KillFeed[i] = Workspace.KillFeed[tostring(i)].Killer.Value
-          end
-  
-          --  loop
-          spawn(function()
-              while runLoop do
-                  pcall(names)
-                  wait(0.2)
-              end
-          end)
-      else
-          runLoop = false
-          restores_name()
-      end
-  end)
-  
-  
-
-
-
-Extra:NewLabel("Chat") -- fun i guess
-		
-Extra:NewToggle("IsChad", "?",function(x)
-  if game.Players.LocalPlayer:FindFirstChild('IsChad') then
-      game.Players.LocalPlayer.IsChad:Destroy()
-      return
-  end
-      if x then
-  local IsMod = Instance.new('IntValue', game.Players.LocalPlayer)
-  IsMod.Name = "IsChad"
-  end
-
-end)
-
-Extra:NewToggle("VIP", "?",function(x)
-  if game.Players.LocalPlayer:FindFirstChild('VIP') then
-      game.Players.LocalPlayer.VIP:Destroy()
-      return
-  end
-  
-  if x then
-  local IsMod = Instance.new('IntValue', game.Players.LocalPlayer)
-  IsMod.Name = "VIP"
-  end
-end)
-
-Extra:NewToggle("OldVIP", "?",function(x)
-  if game.Players.LocalPlayer:FindFirstChild('OldVIP') then
-      game.Players.LocalPlayer.OldVIP:Destroy()
-      return
-  end
-      if x then
-  local IsMod = Instance.new('IntValue', game.Players.LocalPlayer)
-  IsMod.Name = "OldVIP"
-  end
-end)
-Extra:NewToggle("Romin", "?",function(x)
-  if game.Players.LocalPlayer:FindFirstChild('Romin') then
-      game.Players.LocalPlayer.Romin:Destroy()
-      return
-  end
-      if x then
-  local IsAdmin = Instance.new('IntValue', game.Players.LocalPlayer)
-  IsAdmin.Name = "Romin"
-  end
-end)
-
-Extra:NewToggle("IsAdmin", "?",function(x)
-  if game.Players.LocalPlayer:FindFirstChild('IsAdmin') then
-      game.Players.LocalPlayer.IsAdmin:Destroy()
-      return
-  end
-      if x then
-  local IsAdmin = Instance.new('IntValue', game.Players.LocalPlayer)
-  IsAdmin.Name = "IsAdmin"
-  end
-end)
-
-
-local Visual = Window:NewTab("Visuals")
-local C = Visual:NewSection("> ESP V1 <")
--- kiriot22s esp
-local aj = loadstring(game:HttpGet("https://rawscript.vercel.app/api/raw/esp_1"))()
-
-C:NewToggle("Enable Esp", "?", function(K)
-  aj:Toggle(K)
-  aj.Players = K
-end)
-
-C:NewToggle("Tracers Esp", "?", function(K)
-  aj.Tracers = K
-end)
-
-C:NewToggle("Name Esp", "?", function(K)
-  aj.Names = K
-end)
-
-C:NewToggle("Boxes Esp", "?", function(K)
-  aj.Boxes = K
-end)
-
-C:NewToggle("Team Coordinate", "?", function(L)
-  aj.TeamColor = L
-end)
-
-C:NewToggle("Teammates", "?", function(L)
-  aj.TeamMates = L
-end)
-
-C:NewColorPicker("ESP Color", "?", Color3.fromRGB(255, 255, 255), function(P)
-  aj.Color = P
-end)
-
-local esp = Visual:NewSection("> Random ESP <")
---esp:NewLabel("> Random ESP <")
-local esp_data = {} 
-local esp_title = 'dontfuckingask'
-
-local function esps(parent, label)
-    local BillboardGui = Instance.new('BillboardGui')
-    local TextLabel = Instance.new('TextLabel')
-
-    BillboardGui.Name = esp_title
-    BillboardGui.Parent = parent
-    BillboardGui.AlwaysOnTop = true
-    BillboardGui.Size = UDim2.new(0, 50, 0, 50)
-    BillboardGui.StudsOffset = Vector3.new(0, 2, 0)
-
-    TextLabel.Parent = BillboardGui
-    TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
-    TextLabel.BackgroundTransparency = 1
-    TextLabel.Size = UDim2.new(1, 0, 1, 0)
-    TextLabel.Text = label
-    TextLabel.TextColor3 = Color3.new(1, 0, 0)
-    TextLabel.TextScaled = false
-
-    return BillboardGui
-end
-
-local function applyESP(object, label)
-    if object:IsA('TouchTransmitter') then
-        local parent = object.Parent
-        if not parent:FindFirstChild(esp_title) then
-            local newESP = esps(parent, label)
-            esp_data[parent] = newESP
+            runLoop = false
+            restores_name()
         end
     end
-end
+})
 
-local function toggleESP(enable, name, label)
-    if enable then
-        for _, v in ipairs(game.Workspace:GetDescendants()) do
-            if v:IsA('TouchTransmitter') and v.Parent.Name == name then
-                applyESP(v, label)
-            end
-        end
-        
-        game.Workspace.DescendantAdded:Connect(function(descendant)
-            if descendant:IsA('TouchTransmitter') and descendant.Parent.Name == name then
-                applyESP(descendant, label)
-            end
-        end)
-    else
-        for parent, espElement in pairs(esp_data) do
-            if parent and espElement then
-                espElement:Destroy()
-                esp_data[parent] = nil
-            end
-        end
-    end
-end
 
-esp:NewToggle('Ammo Box ESP', '?', function(enabled)
-    toggleESP(enabled, 'DeadAmmo', 'Ammo Box')
-end)
+Boxes.Menu:AddLabel("hide keybind"):AddKeyPicker("Hide", { Default = "KeypadOne", NoUI = true }); Library.ToggleKeybind = Options.Hide
+Boxes.Menu:AddLabel("unload keybind"):AddKeyPicker("Unload", { Default = "Delete", NoUI = true })
+Boxes.Menu:AddButton("unload", function() Library:Unload() end)
 
-esp:NewToggle('HP Jug ESP', '?', function(enabled)
-    toggleESP(enabled, 'DeadHP', 'HP Jar')
-end)
-
---// Setting \\--
-local Setting = Window:NewTab("Setting")
-local Section = Setting:NewSection("> Performance <")
-local originalMaterials = {}
-local originalDecalsTextures = {}
-local originalLightingSettings = {
-    GlobalShadows = game.Lighting.GlobalShadows,
-    FogEnd = game.Lighting.FogEnd,
-    Brightness = game.Lighting.Brightness
+Library.Colors = {
+	MainColor       = Color3.fromHex("1e1e1e"),
+	AccentColor     = Color3.fromHex("db4467"),
+	OutlineColor    = Color3.fromHex("141414"),
+	BackgroundColor = Color3.fromHex("232323")
 }
-local originalTerrainSettings = {
-    WaterWaveSize = game.Workspace.Terrain.WaterWaveSize,
-    WaterWaveSpeed = game.Workspace.Terrain.WaterWaveSpeed,
-    WaterReflectance = game.Workspace.Terrain.WaterReflectance,
-    WaterTransparency = game.Workspace.Terrain.WaterTransparency
-}
-local originalEffects = {}
 
-Section:NewToggle("Anti Lag", "?", function(state)
-    if state then
-        for ai, O in pairs(game:GetService("Workspace"):GetDescendants()) do
-            if O:IsA("BasePart") and not O.Parent:FindFirstChild("Humanoid") then
-                originalMaterials[O] = O.Material
-                O.Material = Enum.Material.SmoothPlastic
-                if O:IsA("Texture") then
-                    table.insert(originalDecalsTextures, O)
-                    O:Destroy()
-                end
-            end
-        end
-    else
-        for O, material in pairs(originalMaterials) do
-            if O and O:IsA("BasePart") then
-                O.Material = material
-            end
-        end
-        originalMaterials = {}
-    end
-end)
-
-Section:NewToggle("FPS Boost", "?", function(state)
-    if state then
-        local g = game
-        local w = g.Workspace
-        local l = g.Lighting
-        local t = w.Terrain
-        originalTerrainSettings.WaterWaveSize = t.WaterWaveSize
-        originalTerrainSettings.WaterWaveSpeed = t.WaterWaveSpeed
-        originalTerrainSettings.WaterReflectance = t.WaterReflectance
-        originalTerrainSettings.WaterTransparency = t.WaterTransparency
-
-        t.WaterWaveSize = 0
-        t.WaterWaveSpeed = 0
-        t.WaterReflectance = 0
-        t.WaterTransparency = 0
-        l.GlobalShadows = false
-        l.FogEnd = 9e9
-        l.Brightness = 0
-        settings().Rendering.QualityLevel = "Level01"
-
-        for i, v in pairs(g:GetDescendants()) do
-            if v:IsA("Part") or v:IsA("Union") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
-                originalMaterials[v] = v.Material
-                v.Material = "Plastic"
-                v.Reflectance = 0
-            elseif v:IsA("Decal") or v:IsA("Texture") then
-                table.insert(originalDecalsTextures, v)
-                v.Transparency = 1
-            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
-                v.Lifetime = NumberRange.new(0)
-            elseif v:IsA("Explosion") then
-                v.BlastPressure = 1
-                v.BlastRadius = 1
-            elseif v:IsA("Fire") or v:IsA("SpotLight") or v:IsA("Smoke") then
-                v.Enabled = false
-            elseif v:IsA("MeshPart") then
-                originalMaterials[v] = v.Material
-                v.Material = "Plastic"
-                v.Reflectance = 0
-                v.TextureID = 10385902758728957
-            end
-        end
-
-        for i, e in pairs(l:GetChildren()) do
-            if e:IsA("BlurEffect") or e:IsA("SunRaysEffect") or e:IsA("ColorCorrectionEffect") or e:IsA("BloomEffect") or e:IsA("DepthOfFieldEffect") then
-                originalEffects[e] = e.Enabled
-                e.Enabled = false
-            end
-        end
-    else
-        local t = game.Workspace.Terrain
-        t.WaterWaveSize = originalTerrainSettings.WaterWaveSize
-        t.WaterWaveSpeed = originalTerrainSettings.WaterWaveSpeed
-        t.WaterReflectance = originalTerrainSettings.WaterReflectance
-        t.WaterTransparency = originalTerrainSettings.WaterTransparency
-
-        game.Lighting.GlobalShadows = originalLightingSettings.GlobalShadows
-        game.Lighting.FogEnd = originalLightingSettings.FogEnd
-        game.Lighting.Brightness = originalLightingSettings.Brightness
-
-        settings().Rendering.QualityLevel = "Automatic"
-
-        for v, material in pairs(originalMaterials) do
-            if v and v:IsA("BasePart") then
-                v.Material = material
-                v.Reflectance = 0
-            end
-        end
-        originalMaterials = {}
-
-        for e, enabled in pairs(originalEffects) do
-            if e then
-                e.Enabled = enabled
-            end
-        end
-        originalEffects = {}
-        
-        for _, v in pairs(originalDecalsTextures) do
-            if v and v.Parent then
-                v.Transparency = 0
-            end
-        end
-        originalDecalsTextures = {}
-    end
-end)
-
-local fullBrightEnabled = false
-Section:NewToggle("Full Bright", "?", function(enabled)
-    fullBrightEnabled = enabled 
-
-    local Light = game:GetService("Lighting")
-
-    local function doFullBright()
-        if fullBrightEnabled then
-            Light.Ambient = Color3.new(1, 1, 1)
-            Light.ColorShift_Bottom = Color3.new(1, 1, 1)
-            Light.ColorShift_Top = Color3.new(1, 1, 1)
-        else
-            Light.Ambient = Color3.new(0.5, 0.5, 0.5)
-            Light.ColorShift_Bottom = Color3.new(0, 0, 0)
-            Light.ColorShift_Top = Color3.new(0, 0, 0)
-        end
-    end
-
-    doFullBright()
-
-    Light.LightingChanged:Connect(doFullBright)
-end)
-
-local Section = Setting:NewSection("> Server <")
-Section:NewButton("Server Hop", "?", function() -- somebody script, not ours 
-  local placeID = game.PlaceId
-  local allIDs = {}
-  local foundAnything = ""
-  local actualHour = os.date("!*t").hour
-  local deleted = false
-  local file = pcall(function()
-    allIDs = game:GetService('HttpService'):JSONDecode(readfile("NotSameServers.json"))
-  end)
-
-  if not file then
-    table.insert(allIDs, actualHour)
-    writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(allIDs))
-  end
-
-  function teleportReturner()
-    local site
-    if foundAnything == "" then
-      site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' ..
-        placeID .. '/servers/Public?sortOrder=Asc&limit=100'))
-    else
-      site = game.HttpService:JSONDecode(game:HttpGet('https://games.roblox.com/v1/games/' ..
-        placeID .. '/servers/Public?sortOrder=Asc&limit=100&cursor=' .. foundAnything))
-    end
-
-    local serverID = ""
-
-    if site.nextPageCursor and site.nextPageCursor ~= "null" and site.nextPageCursor ~= nil then
-      foundAnything = site.nextPageCursor
-    end
-
-    local num = 0
-
-    for i, v in pairs(site.data) do
-      local possible = true
-      serverID = tostring(v.id)
-
-      if tonumber(v.maxPlayers) > tonumber(v.playing) then
-        for _, existing in pairs(allIDs) do
-          if num ~= 0 then
-            if serverID == tostring(existing) then
-              possible = false
-            end
-          else
-            if tonumber(actualHour) ~= tonumber(existing) then
-              local delFile = pcall(function()
-                delfile("NotSameServers.json")
-                allIDs = {}
-                table.insert(allIDs, actualHour)
-              end)
-            end
-          end
-          num = num + 1
-        end
-
-        if possible == true then
-          table.insert(allIDs, serverID)
-          wait()
-          pcall(function()
-            writefile("NotSameServers.json", game:GetService('HttpService'):JSONEncode(allIDs))
-            wait()
-            game:GetService("TeleportService"):TeleportToPlaceInstance(placeID, serverID, game.Players.LocalPlayer)
-          end)
-          wait(4)
-        end
-      end
-    end
-  end
-
-  function teleport()
-    while wait() do
-      pcall(function()
-        teleportReturner()
-        if foundAnything ~= "" then
-          teleportReturner()
-        end
-      end)
-    end
-  end
-
-  teleport()
-end)
-
-Section:NewButton("Rejoin Server", "?", function()
-  game:GetService("TeleportService"):Teleport(game.PlaceId, Player)
-end)
-
-local keybindSection = Setting:NewSection("> Keybind <")
-keybindSection:NewKeybind("Close UI", "Toggle UI", Enum.KeyCode.LeftControl, function()
-  Library:ToggleUI()
-end)
-
-Section:NewButton("Copy Discord Link", "Discord", function()
-    setclipboard("https://discord.com/invite/d2446gBjfq")
-end)
-
-
-local UserInputService = game:GetService("UserInputService")
-
-local function checkDevice()
-    if UserInputService.TouchEnabled then
-        local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-        local frame = Instance.new("ImageLabel", gui)
-        local button = Instance.new("TextButton", frame)
-        
-        frame.BackgroundTransparency = 1
-        frame.Position = UDim2.new(0, 0, 0.65, -100)
-        frame.Size = UDim2.new(0, 100, 0, 50)
-        frame.Image = "rbxassetid://3570695787"
-        frame.ImageColor3 = Color3.fromRGB(11, 18, 7)
-        frame.ImageTransparency = 0.2
-        frame.ScaleType = Enum.ScaleType.Slice
-        frame.SliceCenter = Rect.new(100, 100, 100, 100)
-        frame.SliceScale = 0.12
-        
-        button.AnchorPoint = Vector2.new(0, 0.5)
-        button.BackgroundTransparency = 1
-        button.Position = UDim2.new(0.022, 0, 0.85, -20)
-        button.Size = UDim2.new(1, -10, 1, 0)
-        button.Font = Enum.Font.SourceSans
-        button.Text = "Toggle"
-        button.TextColor3 = Color3.fromRGB(0, 34, 255)
-        button.TextSize = 20
-        button.TextWrapped = true
-        button.ZIndex = 11
-        button.MouseButton1Down:Connect(function()
-            Library:ToggleUI()
-        end)
-        
-        local dragging, dragStart, startPos = false, nil, nil
-        local function update(input)
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-        
-        button.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                dragStart = input.Position
-                startPos = frame.Position
-            end
-        end)
-        
-        button.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = false
-            end
-        end)
-        
-        game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                update(input)
-            end
-        end)      
-        print("Mobile ✅")  
-    else
-        print("Desktop ✅")
-    end
+for property, color in Library.Colors do
+	Library[property] = color
 end
 
-checkDevice()
+Library.AccentColorDark = Library:GetDarkerColor(Library.AccentColor) Library:UpdateColorsUsingRegistry()
