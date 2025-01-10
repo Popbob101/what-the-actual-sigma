@@ -426,6 +426,126 @@ coroutine.resume(coroutine.create(function()
     end
 end))
 
+Boxes.Aim:AddToggle('Auto Farm', {
+    Text = 'Auto Farm',
+    Default = false,
+    Tooltip = 'It Breaks sometimes',
+
+    Callback = function(bool)
+        getgenv().AutoFarm = bool
+
+        local runServiceConnection
+        local mouseDown = false
+        local player = game.Players.LocalPlayer
+        local camera = game.Workspace.CurrentCamera
+        
+        local currentTarget = nil
+        local targetTime = 0
+        local targetSwitchDelay = 5 -- Time in seconds to switch target
+        local targetPosition = Vector3.new(1, -403, 0) -- The reference position
+        
+        game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = bool and "Infinite Ammo" or ""
+        
+        -- Check if the enemy is within 50 studs of target position
+        local function isEnemyInRangeOfTargetPosition(enemyPosition)
+            return (enemyPosition - targetPosition).Magnitude <= 50
+        end
+        
+        function closestplayer()
+            local closestDistance = math.huge
+            local closestPlayer = nil
+        
+            for _, enemyPlayer in pairs(game.Players:GetPlayers()) do
+                if enemyPlayer ~= player and enemyPlayer.TeamColor ~= player.TeamColor and enemyPlayer.Character then
+                    local character = enemyPlayer.Character
+                    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+                    local humanoid = character:FindFirstChild("Humanoid")
+                    if humanoidRootPart and humanoid and humanoid.Health > 0 then
+                        local distance = (player.Character.HumanoidRootPart.Position - humanoidRootPart.Position).Magnitude
+                        
+                        -- If the enemy is within 50 studs of the target position, don't target them
+                        if not isEnemyInRangeOfTargetPosition(humanoidRootPart.Position) and distance < closestDistance then
+                            closestDistance = distance
+                            closestPlayer = enemyPlayer
+                        end
+                    end
+                end
+            end
+        
+            return closestPlayer
+        end
+        
+        local function AutoFarm()
+            game:GetService("ReplicatedStorage").wkspc.TimeScale.Value = 12
+        
+            runServiceConnection = game:GetService("RunService").Stepped:Connect(function(_, deltaTime)
+                if getgenv().AutoFarm then
+                    local closestPlayer = closestplayer()
+        
+                    if closestPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        if currentTarget ~= closestPlayer then
+                            currentTarget = closestPlayer
+                            targetTime = 0 -- Reset the target timer
+                        end
+        
+                        targetTime = targetTime + deltaTime
+        
+                        -- Switch target if the same target has been held for more than 5 seconds
+                        if targetTime >= targetSwitchDelay then
+                            closestPlayer = closestplayer() -- Switch to a new target
+                            targetTime = 0
+                        end
+        
+                        local enemyRootPart = closestPlayer.Character.HumanoidRootPart
+                        local targetPosition = enemyRootPart.Position - enemyRootPart.CFrame.LookVector * 2 + Vector3.new(0, 2, 0)
+                        player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+        
+                        if closestPlayer.Character:FindFirstChild("Head") then
+                            local enemyHead = closestPlayer.Character.Head.Position
+                            camera.CFrame = CFrame.new(camera.CFrame.Position, enemyHead)
+                        end
+        
+                        if not mouseDown then
+                            mouse1press()
+                            mouseDown = true
+                        end
+                    end
+                else
+                    if runServiceConnection then
+                        runServiceConnection:Disconnect()
+                        runServiceConnection = nil
+                    end
+                end
+            end)
+        end
+        
+        local function onCharacterAdded(character)
+            wait(0.5)
+            AutoFarm()
+        end
+        
+        player.CharacterAdded:Connect(onCharacterAdded)
+        
+        if bool then
+            wait(0.5)
+            AutoFarm()
+        else
+            game:GetService("ReplicatedStorage").wkspc.CurrentCurse.Value = ""
+            getgenv().AutoFarm = false
+            game:GetService("ReplicatedStorage").wkspc.TimeScale.Value = 1
+            if runServiceConnection then
+                runServiceConnection:Disconnect()
+                runServiceConnection = nil
+            end
+            if mouseDown then
+                mouse1release()
+                mouseDown = false
+            end
+        end
+        
+    end
+})
+
 --- >>> > Anti Aim < <<< ---
 local spinSpeed = 10
 local gyro
@@ -496,6 +616,8 @@ Boxes.AA:AddInput('AASPEED', {
     end
 })
 
+--- >>> > VISUAL < <<< ---
+
 local ESPSolo = loadstring(game:HttpGet("https://raw.githubusercontent.com/V3xOwnYou/Universalv1/main/SoloEsp"))();
 ESPSolo.Enabled = true;
 ESPSolo.BoxType = "Corner Box Esp";
@@ -508,6 +630,14 @@ Boxes.Visual:AddToggle('CornerBox', {
     Callback = function(v)
         ESPSolo.ShowBox = v;
     end
+}):AddColorPicker('BColor', {
+    Default = Color3.new(0, 1, 0),
+    Title = 'Box Color',
+    Transparency = 0,
+    Callback = function(Value)
+        ESPSolo.BoxOutlineColor = Value
+        ESPSolo.BoxColor = Value
+    end
 })
 
 Boxes.Visual:AddToggle('Name', {
@@ -517,6 +647,13 @@ Boxes.Visual:AddToggle('Name', {
 
     Callback = function(v)
         ESPSolo.ShowName = v;
+    end
+}):AddColorPicker('NColor', {
+    Default = Color3.new(0, 1, 0),
+    Title = 'Name Color',
+    Transparency = 0,
+    Callback = function(Value)
+        ESPSolo.NameColor = Value
     end
 })
 
@@ -528,6 +665,15 @@ Boxes.Visual:AddToggle('Health', {
     Callback = function(v)
         ESPSolo.ShowHealth = v;
     end
+}):AddColorPicker('HColor', {
+    Default = Color3.new(0, 1, 0),
+    Title = 'Health Color',
+    Transparency = 0,
+    Callback = function(Value)
+        ESPSolo.HealthOutlineColor = Value
+        ESPSolo.HealthHighColor = Value
+        ESPSolo.HealthLowColor = Value
+    end
 })
 
 Boxes.Visual:AddToggle('Tracer', {
@@ -537,6 +683,13 @@ Boxes.Visual:AddToggle('Tracer', {
 
     Callback = function(v)
         ESPSolo.ShowTracer = v;
+    end
+}):AddColorPicker('TColor', {
+    Default = Color3.new(0, 1, 0),
+    Title = 'Tracer Color',
+    Transparency = 0,
+    Callback = function(Value)
+        ESPSolo.TracerColor = Value
     end
 })
 
@@ -1087,6 +1240,10 @@ Boxes.PlayerMods:AddInput('Power', {
     end
 })
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+
 local original_names = {
     GUIName = nil,
     GUIName2 = nil,
@@ -1174,6 +1331,24 @@ Boxes.PlayerMods:AddToggle('HName', {
     end
 })
 
+Boxes.PlayerMods:AddToggle('VIP', {
+    Text = 'VIP?',
+    Default = false,
+    Tooltip = '',
+
+    Callback = function(x)
+        if game.Players.LocalPlayer:FindFirstChild('VIP') then
+            game.Players.LocalPlayer.VIP:Destroy()
+            return
+        end
+        
+        if x then
+        local IsMod = Instance.new('IntValue', game.Players.LocalPlayer)
+        IsMod.Name = "VIP"
+        end
+    end
+})
+
 
 Boxes.Menu:AddLabel("hide keybind"):AddKeyPicker("Hide", { Default = "KeypadOne", NoUI = true }); Library.ToggleKeybind = Options.Hide
 Boxes.Menu:AddLabel("unload keybind"):AddKeyPicker("Unload", { Default = "Delete", NoUI = true })
@@ -1191,3 +1366,21 @@ for property, color in Library.Colors do
 end
 
 Library.AccentColorDark = Library:GetDarkerColor(Library.AccentColor) Library:UpdateColorsUsingRegistry()
+
+local function Clear(Lines)
+    print(string.rep("\n", Lines))
+end
+
+Clear(200)
+
+local Watermark = [[ SKEET.WIN | SKEET.WIN | SKEET.WIN | SKEET.WIN | SKEET.WIN | 
+▄▀▀ █░▄▀ █▀▀ █▀▀ ▀█▀   █░░░█ ▀ █▄░█ 
+░▀▄ █▀▄░ █▀▀ █▀▀ ░█░   █░█░█ █ █░▀█ 
+▀▀░ ▀░▀▀ ▀▀▀ ▀▀▀ ░▀░ O ░▀░▀░ ▀ ▀░░▀ 
+
+Credits:
+Lead Dev - ren
+Dev - jols1337
+]]
+
+print(Watermark)
